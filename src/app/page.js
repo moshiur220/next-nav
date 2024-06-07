@@ -1,11 +1,11 @@
 import React from 'react'
-import Sidebar from './components/Sidebar'
+import SidebarDatabase from './components/SidebarDatabase'
 
 
 function page() {
   return (
     <div className='d-flex'>
-        <Sidebar />
+        <SidebarDatabase />
     </div>
   )
 }
