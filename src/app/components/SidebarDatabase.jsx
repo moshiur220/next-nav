@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faChevronRight, faChevronDown, faComments, faMap, faPalette, faCogs } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
@@ -13,45 +14,56 @@ const iconMap = {
 };
 
 // RecursiveMenu Component
-const RecursiveMenu = ({ menu, openMenus, activeMenus, toggleMenu, setActiveMenu, level = 0 }) => (
-  <ul className={`pl-${level * 2} space-y-2 transition-all duration-300 ease-in-out`}>
-    {menu.map((item, index) => (
-      <li key={index}>
-        <div
-          className={`flex items-center justify-between cursor-pointer p-2 rounded ${
-            activeMenus[level] === item.name ? 'bg-violet-600 text-white' : 'text-black hover:bg-indigo-600 hover:text-white'
-          }`}
-          onClick={() => {
-            console.log(`Clicked menu level ${level + 1}: ${item.name}`);
-            toggleMenu(item.name);
-            setActiveMenu(level, item.name);
-          }}
-        >
-          <div className="flex items-center space-x-2">
-            {item.icon && <FontAwesomeIcon icon={iconMap[item.icon]} className="text-red-500" />}
-            <span>{item.name}</span>
+const RecursiveMenu = ({ menu, openMenus, activeMenus, toggleMenu, setActiveMenu, level = 0 }) => {
+  const router = useRouter();
+
+  const handleClick = (item) => {
+    console.log(`Clicked menu level ${level + 1}: ${item.name}`);
+    toggleMenu(item.name);
+    setActiveMenu(level, item.name);
+    if (item.children && item.children.length > 0) {
+      router.push(`/cat/${item.id}`);
+    } else {
+      router.push(`/product/${item.id}`);
+    }
+  };
+
+  return (
+    <ul className={`pl-${level * 2} space-y-2 transition-all duration-300 ease-in-out`}>
+      {menu.map((item, index) => (
+        <li key={index}>
+          <div
+            className={`flex items-center justify-between cursor-pointer p-2 rounded mb-2 ${
+              activeMenus[level] === item.name ? 'bg-violet-600 text-white' : 'text-black hover:bg-indigo-600 hover:text-white'
+            }`}
+            onClick={() => handleClick(item)}
+          >
+            <div className="flex items-center space-x-2">
+              {item.icon && <FontAwesomeIcon icon={iconMap[item.icon]} className="text-red-500" />}
+              <span>{item.name}</span>
+            </div>
+            {item.children && item.children.length > 0 && (
+              <FontAwesomeIcon
+                icon={openMenus.includes(item.name) ? faChevronDown : faChevronRight}
+                className="text-red-500"
+              />
+            )}
           </div>
-          {item.children && item.children.length > 0 && (
-            <FontAwesomeIcon
-              icon={openMenus.includes(item.name) ? faChevronDown : faChevronRight}
-              className="text-red-500"
+          {openMenus.includes(item.name) && item.children && item.children.length > 0 && (
+            <RecursiveMenu 
+              menu={item.children} 
+              openMenus={openMenus} 
+              activeMenus={activeMenus} 
+              toggleMenu={toggleMenu} 
+              setActiveMenu={setActiveMenu} 
+              level={level + 1} 
             />
           )}
-        </div>
-        {openMenus.includes(item.name) && item.children && item.children.length > 0 && (
-          <RecursiveMenu 
-            menu={item.children} 
-            openMenus={openMenus} 
-            activeMenus={activeMenus} 
-            toggleMenu={toggleMenu} 
-            setActiveMenu={setActiveMenu} 
-            level={level + 1} 
-          />
-        )}
-      </li>
-    ))}
-  </ul>
-);
+        </li>
+      ))}
+    </ul>
+  );
+};
 
 // Sidebar Component
 const SidebarDatabase = () => {
@@ -100,7 +112,7 @@ const SidebarDatabase = () => {
       <div
         className={`fixed inset-y-0 left-0 w-64 bg-white border-r transform ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
-        } md:translate-x-0 transition-transform duration-300 ease-in-out overflow-y-auto`}
+        } md:translate-x-0 transition-transform duration-300 ease-in-out overflow-y-auto z-40`}
       >
         <div className="p-4">
           <div className="text-2xl font-bold">Pro Sidebar</div>
