@@ -1,6 +1,6 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
-import SidebarDatabase from './components/SidebarDatabase';
+import SidebarDatabaseImage from './components/SidebarDatabaseImage';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,7 +14,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={inter.className}>
         <div className="flex h-screen overflow-hidden">
-          <SidebarDatabase />
+          <SidebarDatabaseImage />
           <div className="flex-1 p-4 overflow-y-auto sm:ml-64">
             {children}
           </div>
