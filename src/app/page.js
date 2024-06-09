@@ -1,9 +1,16 @@
-import React from 'react'
+// pages/products.js
 
-function page() {
+import ProductList from "./components/ProductList";
+
+
+const ProductsPage = () => {
   return (
-    <div>To achieve the layout with Tailwind CSS, you can utilize Tailwind's utility classes for the sidebar and content area. Here’s how you can update your RootLayout component to use Tailwind CSS </div>
-  )
-}
+    <div>
+      <h1 className="text-3xl font-bold text-center my-8">Our Products</h1>
+      <ProductList />
+ 
+    </div>
+  );
+};
 
-export default page
+export default ProductsPage;
